@@ -36,6 +36,7 @@
 #include <stdlib.h>
 
 #include "rdkafkacpp.h"
+#include "custom/configuration.hpp"
 
 extern "C" {
 #include "../src/rdkafka.h"

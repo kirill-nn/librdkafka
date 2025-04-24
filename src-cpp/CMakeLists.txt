@@ -1,3 +1,5 @@
+set(CMAKE_CXX_STANDARD 20)
+
 set(LIBVER 1)
 
 set(
@@ -23,7 +25,9 @@ else()
   set(RDKAFKA_BUILD_MODE SHARED)
 endif()
 
-add_library(rdkafka++ ${RDKAFKA_BUILD_MODE} ${sources})
+file(GLOB_RECURSE CUSTOM custom/**.cpp)
+
+add_library(rdkafka++ ${RDKAFKA_BUILD_MODE} ${sources} ${CUSTOM})
 if(NOT RDKAFKA_BUILD_STATIC)
   set_property(TARGET rdkafka++ PROPERTY SOVERSION ${LIBVER})
 endif()
