@@ -92,3 +92,5 @@ install(
     FILES "rdkafkacpp.h"
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/librdkafka"
 )
+
+add_subdirectory(examples)

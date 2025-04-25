@@ -3,8 +3,8 @@
 #include <memory>
 #include <functional>
 
+#include "common.hpp"
 #include "rdkafka.h"
-#include "message.hpp"
 
 namespace RdKafka {
     class configuration final {
@@ -22,16 +22,19 @@ namespace RdKafka {
 
         static std::unique_ptr<configuration> create(ConfType conf_type);
 
-        [[nodiscard]] rd_kafka_conf_t* rk_conf() const;
+        ConfResult set(const std::string &name, const std::string &value, error_code& ec) const;
 
-        [[nodiscard]] rd_kafka_topic_conf_t* rkt_conf() const;
+        [[nodiscard]] rd_kafka_conf_t *rk_conf() const;
 
-        std::function<void(std::unique_ptr<message>)> dr_cb() const;
+        [[nodiscard]] rd_kafka_topic_conf_t *rkt_conf() const;
+
+        [[nodiscard]] ConfType conf_type() const;
+
     private:
         explicit configuration(ConfType conf_type);
 
+        ConfType conf_type_;
         rd_kafka_conf_t *rk_conf_;
         rd_kafka_topic_conf_t *rkt_conf_;
-        std::function<void(std::unique_ptr<message>)> dr_cb_;
     };
 }
