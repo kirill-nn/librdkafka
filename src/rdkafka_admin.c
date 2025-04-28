@@ -1611,7 +1611,7 @@ rd_kafka_error_t *rd_kafka_AdminOptions_set_match_consumer_group_states(
         char errstr[512];
         rd_kafka_resp_err_t err;
         rd_list_t *states_list = rd_list_new(0, NULL);
-        rd_list_init_int32(states_list, consumer_group_states_cnt);
+        rd_list_init_int32(states_list, (int)consumer_group_states_cnt);
         uint64_t states_bitmask = 0;
 
         if (RD_KAFKA_CONSUMER_GROUP_STATE__CNT >= 64) {
@@ -1630,7 +1630,7 @@ rd_kafka_error_t *rd_kafka_AdminOptions_set_match_consumer_group_states(
                             "Invalid group state value");
                 }
 
-                state_bit = 1 << state;
+                state_bit = (uint64_t)1 << state;
                 if (states_bitmask & state_bit) {
                         rd_list_destroy(states_list);
                         return rd_kafka_error_new(
@@ -1660,7 +1660,7 @@ rd_kafka_error_t *rd_kafka_AdminOptions_set_match_consumer_group_types(
         rd_list_t *types_list  = rd_list_new(0, NULL);
         uint64_t types_bitmask = 0;
 
-        rd_list_init_int32(types_list, consumer_group_types_cnt);
+        rd_list_init_int32(types_list, (int)consumer_group_types_cnt);
 
         if (RD_KAFKA_CONSUMER_GROUP_TYPE__CNT >= 64) {
                 rd_assert("BUG: cannot handle types with a bitmask anymore");
@@ -1683,7 +1683,7 @@ rd_kafka_error_t *rd_kafka_AdminOptions_set_match_consumer_group_types(
                             "UNKNOWN type is not allowed");
                 }
 
-                type_bit = 1 << type;
+                type_bit = (uint64_t)1 << type;
                 if (types_bitmask & type_bit) {
                         rd_list_destroy(types_list);
                         return rd_kafka_error_new(
@@ -4168,12 +4168,12 @@ rd_kafka_ListOffsets_response_merge(rd_kafka_op_t *rko_fanout,
 
         for (i = 0; i < partition_cnt; i++) {
                 rd_kafka_ListOffsetsResultInfo_t *partial_result_info =
-                    rd_list_elem(&rko_partial->rko_u.admin_result.results, i);
+                    rd_list_elem(&rko_partial->rko_u.admin_result.results, (int)i);
                 for (j = 0; j < total_partitions; j++) {
                         rd_kafka_ListOffsetsResultInfo_t *result_info =
                             rd_list_elem(
                                 &rko_fanout->rko_u.admin_request.fanout.results,
-                                j);
+                                (int)j);
                         if (rd_kafka_topic_partition_cmp(
                                 result_info->topic_partition,
                                 partial_result_info->topic_partition) == 0) {
@@ -4268,7 +4268,7 @@ static void rd_kafka_ListOffsets_handle_result(rd_kafka_op_t *rko_result) {
         i = 0;
         RD_KAFKA_TPLIST_FOREACH(rktpar, rktpars) {
                 result_info =
-                    rd_list_elem(&rko_result->rko_u.admin_result.results, i);
+                    rd_list_elem(&rko_result->rko_u.admin_result.results, (int)i);
                 rktpar_err = err ? err : result_info->topic_partition->err;
 
                 if (rd_kafka_admin_result_err_refresh(rktpar_err)) {
@@ -4324,7 +4324,7 @@ rd_kafka_ListOffsets_leaders_queried_cb(rd_kafka_t *rk,
             rd_list_elem(&rko_fanout->rko_u.admin_request.args, 0);
         partition_cnt = topic_partitions->cnt;
         rd_list_init(&rko_fanout->rko_u.admin_request.fanout.results,
-                     partition_cnt,
+                     (int)partition_cnt,
                      rd_kafka_ListOffsetsResultInfo_destroy_free);
 
         for (i = 0; i < partition_cnt; i++) {
@@ -4349,7 +4349,7 @@ rd_kafka_ListOffsets_leaders_queried_cb(rd_kafka_t *rk,
                 result_element = NULL;
                 for (i = 0; i < partition_cnt; i++) {
                         result_element = rd_list_elem(
-                            &rko_fanout->rko_u.admin_request.fanout.results, i);
+                            &rko_fanout->rko_u.admin_request.fanout.results, (int)i);
                         if (rd_kafka_topic_partition_cmp(
                                 result_element->topic_partition, rktpar) == 0)
                                 break;
@@ -5956,7 +5956,7 @@ void rd_kafka_DescribeUserScramCredentials(
 
         /* Check Duplicates */
         if (user_cnt > 1) {
-                userlist = rd_list_new(user_cnt, rd_free);
+                userlist = rd_list_new((int)user_cnt, rd_free);
                 for (i = 0; i < user_cnt; i++) {
                         rd_list_add(userlist, rd_strdup(users[i]));
                 }
@@ -5971,7 +5971,7 @@ void rd_kafka_DescribeUserScramCredentials(
                 rd_list_destroy(userlist);
         }
 
-        rd_list_init(&rko->rko_u.admin_request.args, user_cnt, rd_free);
+        rd_list_init(&rko->rko_u.admin_request.args, (int)user_cnt, rd_free);
         for (i = 0; i < user_cnt; i++) {
                 rd_list_add(&rko->rko_u.admin_request.args,
                             rd_kafkap_str_new(users[i], -1));
@@ -6026,10 +6026,10 @@ rd_kafka_UserScramCredentialUpsertion_new(const char *username,
             iterations;
 
         alteration->alteration.upsertion.password =
-            rd_kafkap_bytes_new(password, password_size);
+            rd_kafkap_bytes_new(password, (int)password_size);
         if (salt_size != 0) {
                 alteration->alteration.upsertion.salt =
-                    rd_kafkap_bytes_new(salt, salt_size);
+                    rd_kafkap_bytes_new(salt, (int)salt_size);
         } else {
 #if WITH_SSL && OPENSSL_VERSION_NUMBER >= 0x10101000L
                 unsigned char random_salt[64];
@@ -6243,7 +6243,7 @@ rd_kafka_resp_err_t rd_kafka_AlterUserScramCredentialsRequest(
 
         for (i = 0; i < num_alterations; i++) {
                 rd_kafka_UserScramCredentialAlteration_t *alteration =
-                    rd_list_elem(user_scram_credential_alterations, i);
+                    rd_list_elem(user_scram_credential_alterations, (int)i);
                 if (alteration->alteration_type !=
                     RD_KAFKA_USER_SCRAM_CREDENTIAL_ALTERATION_TYPE_DELETE)
                         continue;
@@ -6265,7 +6265,7 @@ rd_kafka_resp_err_t rd_kafka_AlterUserScramCredentialsRequest(
         rd_kafka_buf_write_arraycnt(rkbuf, num_alterations - num_deletions);
         for (i = 0; i < num_alterations; i++) {
                 rd_kafka_UserScramCredentialAlteration_t *alteration =
-                    rd_list_elem(user_scram_credential_alterations, i);
+                    rd_list_elem(user_scram_credential_alterations, (int)i);
                 if (alteration->alteration_type !=
                     RD_KAFKA_USER_SCRAM_CREDENTIAL_ALTERATION_TYPE_UPSERT)
                         continue;
@@ -6471,7 +6471,7 @@ void rd_kafka_AlterUserScramCredentials(
                 return;
         }
 
-        rd_list_init(&rko->rko_u.admin_request.args, alteration_cnt,
+        rd_list_init(&rko->rko_u.admin_request.args, (int)alteration_cnt,
                      rd_kafka_UserScramCredentialAlteration_destroy_free);
 
         for (i = 0; i < alteration_cnt; i++) {
@@ -8080,7 +8080,7 @@ const rd_kafka_MemberDescription_t *rd_kafka_ConsumerGroupDescription_member(
     const rd_kafka_ConsumerGroupDescription_t *grpdesc,
     size_t idx) {
         return (rd_kafka_MemberDescription_t *)rd_list_elem(&grpdesc->members,
-                                                            idx);
+                                                            (int)idx);
 }
 
 /**

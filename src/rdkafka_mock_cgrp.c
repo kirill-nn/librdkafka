@@ -842,7 +842,7 @@ static void rd_kafka_mock_cgrp_consumer_target_assignment_set(
         new_target_member_epoch = mcgrp->group_epoch;
         RD_LIST_FOREACH(member_id, target_assignment->member_ids, i) {
                 rd_kafkap_str_t *member_id_str =
-                    rd_kafkap_str_new(member_id, strlen(member_id));
+                    rd_kafkap_str_new(member_id, (int)strlen(member_id));
                 rd_kafka_topic_partition_list_t *member_assignment =
                     rd_list_elem(target_assignment->assignment, i);
                 member = rd_kafka_mock_cgrp_consumer_member_find(mcgrp,
@@ -921,7 +921,7 @@ rd_kafka_mock_cgrp_consumer_target_assignment_calculate_range(
                 rd_kafka_topic_partition_list_t *member_assignment;
                 int members_cnt = rd_list_cnt(members);
                 int common, one_more, assigned = 0;
-                rd_kafkap_str_t Topic = {.str = topic, .len = strlen(topic)};
+                rd_kafkap_str_t Topic = {.str = topic, .len = (int)strlen(topic)};
                 rd_kafka_mock_topic_t *mock_topic =
                     rd_kafka_mock_topic_find_by_kstr(mcluster, &Topic);
                 if (!mock_topic)
@@ -1752,7 +1752,7 @@ void rd_kafka_mock_cgrp_consumer_target_assignment(
     rd_kafka_mock_cgrp_consumer_target_assignment_t *target_assignment) {
         rd_kafka_mock_cgrp_consumer_t *mcgrp;
         rd_kafkap_str_t *group_id_str =
-            rd_kafkap_str_new(group_id, strlen(group_id));
+            rd_kafkap_str_new(group_id, (int)strlen(group_id));
 
         mtx_lock(&mcluster->lock);
 

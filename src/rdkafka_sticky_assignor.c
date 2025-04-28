@@ -1825,9 +1825,9 @@ rd_kafka_sticky_assignor_assign_cb(rd_kafka_t *rk,
                                    const char *member_id,
                                    const rd_kafka_metadata_t *metadata,
                                    rd_kafka_group_member_t *members,
-                                   size_t member_cnt,
+                                   uint32_t member_cnt,
                                    rd_kafka_assignor_topic_t **eligible_topics,
-                                   size_t eligible_topic_cnt,
+                                   uint32_t eligible_topic_cnt,
                                    char *errstr,
                                    size_t errstr_size,
                                    void *opaque) {
@@ -2206,7 +2206,7 @@ ut_populate_member_owned_partitions_generation(rd_kafka_group_member_t *rkgm,
 
         if (rkgm->rkgm_owned)
                 rd_kafka_topic_partition_list_destroy(rkgm->rkgm_owned);
-        rkgm->rkgm_owned = rd_kafka_topic_partition_list_new(partition_cnt);
+        rkgm->rkgm_owned = rd_kafka_topic_partition_list_new((int)partition_cnt);
 
         va_start(ap, partition_cnt);
         for (i = 0; i < partition_cnt; i++) {
@@ -4164,7 +4164,7 @@ static int
 setupRackAwareAssignment0(rd_kafka_t *rk,
                           const rd_kafka_assignor_t *rkas,
                           rd_kafka_group_member_t *members,
-                          size_t member_cnt,
+                          uint32_t member_cnt,
                           int replication_factor,
                           int num_broker_racks,
                           size_t topic_cnt,
@@ -4247,7 +4247,7 @@ setupRackAwareAssignment(rd_kafka_t *rk,
                          rd_kafka_topic_partition_list_t **owned_tp_list,
                          rd_bool_t initialize_members) {
         return setupRackAwareAssignment0(
-            rk, rkas, members, member_cnt, replication_factor, num_broker_racks,
+            rk, rkas, members, (int)member_cnt, replication_factor, num_broker_racks,
             topic_cnt, topics, partitions, subscriptions_count, subscriptions,
             consumer_racks, owned_tp_list, initialize_members, NULL);
 }
@@ -4502,7 +4502,7 @@ static int ut_testRackAwareAssignmentWithUniformSubscription(
         for (i = 1; i <= 3; i++) {
                 setupRackAwareAssignment0(
                     rk, rkas, members, RD_ARRAYSIZE(members),
-                    i /* replication factor */, 3, RD_ARRAYSIZE(topics), topics,
+                    (int)i /* replication factor */, 3, RD_ARRAYSIZE(topics), topics,
                     partitions, subscriptions_count, subscriptions,
                     RACKS_INITIAL, owned, rd_true, &metadata);
                 verifyMultipleAssignment(
@@ -4715,7 +4715,6 @@ static int rd_kafka_sticky_assignor_unittest(void) {
             ut_testRackAwareAssignmentWithNonEqualSubscription,
             NULL,
         };
-        size_t i;
 
 
         conf = rd_kafka_conf_new();
@@ -4735,6 +4734,7 @@ static int rd_kafka_sticky_assignor_unittest(void) {
         rkas = rd_kafka_assignor_find(rk, "cooperative-sticky");
         RD_UT_ASSERT(rkas, "sticky assignor not found");
 
+        uint32_t i;
         for (i = 0; i < RD_ARRAY_SIZE(ALL_RACKS) - 1; i++) {
                 char c       = 'a' + i;
                 ALL_RACKS[i] = rd_kafkap_str_new(&c, 1);
@@ -4746,14 +4746,14 @@ static int rd_kafka_sticky_assignor_unittest(void) {
                 int r      = 0;
                 rd_kafka_assignor_ut_rack_config_t j;
 
-                RD_UT_SAY("[ Test #%" PRIusz " ]", i);
+                RD_UT_SAY("[ Test %u ]", i);
                 for (j = RD_KAFKA_RANGE_ASSIGNOR_UT_NO_BROKER_RACK;
                      j != RD_KAFKA_RANGE_ASSIGNOR_UT_CONFIG_CNT; j++) {
-                        RD_UT_SAY("[ Test #%" PRIusz ", RackConfig = %d ]", i,
+                        RD_UT_SAY("[ Test %u, RackConfig = %d ]", i,
                                   j);
                         r += tests[i](rk, rkas, j);
                 }
-                RD_UT_SAY("[ Test #%" PRIusz " ran for %.3fms ]", i,
+                RD_UT_SAY("[ Test %u ran for %.3fms ]", i,
                           (double)(rd_clock() - ts) / 1000.0);
 
                 RD_UT_ASSERT(!r, "^ failed");

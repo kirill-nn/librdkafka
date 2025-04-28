@@ -224,7 +224,7 @@ void rd_kafka_timer_exp_backoff(rd_kafka_timers_t *rkts,
                 rtmr->rtmr_interval = maximum_backoff;
                 jitter              = 0;
         }
-        rd_kafka_timer_schedule(rkts, rtmr, jitter);
+        rd_kafka_timer_schedule(rkts, rtmr, (int)jitter);
         rd_kafka_timers_unlock(rkts);
 }
 

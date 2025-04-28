@@ -4465,7 +4465,7 @@ rd_kafkap_str_t *rd_kafka_topic_partition_list_combine_regexes(
                 const rd_kafka_topic_partition_t *rktpar =
                     &(rktparlist->elems[i]);
                 if (*rktpar->topic == '^') {
-                        combined_regex_len += strlen(rktpar->topic);
+                        combined_regex_len += (int)strlen(rktpar->topic);
                         regex_cnt++;
                 }
         }

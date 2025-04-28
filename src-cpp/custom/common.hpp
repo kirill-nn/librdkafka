@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 namespace RdKafka {
 
     struct error_code final {

@@ -168,7 +168,7 @@ static void update_matched_metrics(rd_kafka_t *rk, size_t j) {
             rd_realloc(rk->rk_telemetry.matched_metrics,
                        sizeof(int) * rk->rk_telemetry.matched_metrics_cnt);
         rk->rk_telemetry
-            .matched_metrics[rk->rk_telemetry.matched_metrics_cnt - 1] = j;
+            .matched_metrics[rk->rk_telemetry.matched_metrics_cnt - 1] = (int)j;
 }
 
 static void rd_kafka_match_requested_metrics(rd_kafka_t *rk) {
@@ -370,7 +370,7 @@ static void rd_kafka_send_push_telemetry(rd_kafka_t *rk,
         rd_kafka_PushTelemetryRequest(
             rkb, &rk->rk_telemetry.client_instance_id,
             rk->rk_telemetry.subscription_id, terminating, compression_used,
-            compressed_metrics_payload, compressed_metrics_payload_size, NULL,
+            compressed_metrics_payload, (int)compressed_metrics_payload_size, NULL,
             0, RD_KAFKA_REPLYQ(rk->rk_ops, 0), rd_kafka_handle_PushTelemetry,
             NULL);
 

@@ -79,8 +79,6 @@ void cnd_wait_exit(cnd_t *cond) {
 
 
 int cnd_timedwait_ms(cnd_t *cnd, mtx_t *mtx, int timeout_ms) {
-        int ret;
-        rd_ts_t abs_timeout;
         rd_bool_t continue_timedwait = rd_true;
 
         if (timeout_ms == RD_POLL_INFINITE)
@@ -88,6 +86,8 @@ int cnd_timedwait_ms(cnd_t *cnd, mtx_t *mtx, int timeout_ms) {
 #if defined(_TTHREAD_WIN32_)
         return _cnd_timedwait_win32(cnd, mtx, (DWORD)timeout_ms);
 #else
+        int ret;
+        rd_ts_t abs_timeout;
         abs_timeout = rd_timeout_init(timeout_ms);
         do {
                 struct timeval tv;

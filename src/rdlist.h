@@ -230,7 +230,7 @@ void rd_list_destroy_free(void *rl);
  *    while ((obj = rd_list_elem(rl, i++)))
  *        do_something(obj);
  */
-void *rd_list_elem(const rd_list_t *rl, int idx);
+void *rd_list_elem(const rd_list_t *rl, size_t idx);
 
 #define RD_LIST_FOREACH(elem, listp, idx)                                      \
         for (idx = 0; (elem = rd_list_elem(listp, idx)); idx++)

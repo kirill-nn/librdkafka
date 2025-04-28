@@ -55,9 +55,9 @@ rd_kafka_resp_err_t rd_kafka_roundrobin_assignor_assign_cb(
     const char *member_id,
     const rd_kafka_metadata_t *metadata,
     rd_kafka_group_member_t *members,
-    size_t member_cnt,
+    uint32_t member_cnt,
     rd_kafka_assignor_topic_t **eligible_topics,
-    size_t eligible_topic_cnt,
+    uint32_t eligible_topic_cnt,
     char *errstr,
     size_t errstr_size,
     void *opaque) {

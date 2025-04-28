@@ -1,18 +1,19 @@
 #pragma once
+
 #include "rdkafkacpp.h"
 
 namespace RdKafka {
     class event final {
     public:
-        event(Type type, ErrorCode err, Severity severity, const char *fac, const char *str);
+        event(Event::Type type, ErrorCode err, Event::Severity severity, const char *fac, const char *str);
 
-        explicit event(Type type);
+        explicit event(Event::Type type);
 
-        Type type() const;
+        Event::Type type() const;
 
         ErrorCode err() const;
 
-        Severity severity() const;
+        Event::Severity severity() const;
 
         std::string fac() const;
 
@@ -28,9 +29,9 @@ namespace RdKafka {
 
     private:
         bool fatal_;
-        Type type_;
+        Event::Type type_;
         ErrorCode err_;
-        Severity severity_;
+        Event::Severity severity_;
         int id_;
         int throttle_time_;
         std::string fac_;

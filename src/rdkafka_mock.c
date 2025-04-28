@@ -2985,7 +2985,7 @@ rd_kafka_mock_get_requests(rd_kafka_mock_cluster_t *mcluster, size_t *cntp) {
                 ret = rd_calloc(*cntp, sizeof(rd_kafka_mock_request_t *));
                 for (i = 0; i < *cntp; i++) {
                         rd_kafka_mock_request_t *mreq =
-                            rd_list_elem(&mcluster->request_list, i);
+                            rd_list_elem(&mcluster->request_list, (int)i);
                         ret[i] = rd_kafka_mock_request_copy(mreq);
                 }
         }
@@ -3132,7 +3132,7 @@ static int ut_cgrp_consumer_member_next_assignment0(
         rd_kafkap_str_t GroupId         = {.str = "group", .len = 5};
         rd_kafkap_str_t MemberId        = {.str = "A", .len = 1};
         rd_kafkap_str_t InstanceId      = {.len = -1};
-        rd_kafkap_str_t SubscribedTopic = {.str = topic, .len = strlen(topic)};
+        rd_kafkap_str_t SubscribedTopic = {.str = topic, .len = (int)strlen(topic)};
         rd_kafkap_str_t SubscribedTopicRegex = RD_KAFKAP_STR_INITIALIZER_EMPTY;
         struct rd_kafka_mock_connection_s *conn =
             (struct rd_kafka_mock_connection_s

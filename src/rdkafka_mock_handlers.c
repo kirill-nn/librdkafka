@@ -2594,7 +2594,7 @@ static int rd_kafka_mock_handle_GetTelemetrySubscriptions(
         /* We use the value in telemetry_push_interval_ms, and if not set, the
          * default of 5 minutes. */
         rd_kafka_buf_write_i32(resp, mcluster->telemetry_push_interval_ms > 0
-                                         ? mcluster->telemetry_push_interval_ms
+                                         ? (int32_t)mcluster->telemetry_push_interval_ms
                                          : (5 * 60 * 1000));
 
         /* Response: TelemetryMaxBytes */

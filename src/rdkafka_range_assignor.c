@@ -496,9 +496,9 @@ rd_kafka_range_assignor_assign_cb(rd_kafka_t *rk,
                                   const char *member_id,
                                   const rd_kafka_metadata_t *metadata,
                                   rd_kafka_group_member_t *members,
-                                  size_t member_cnt,
+                                  uint32_t member_cnt,
                                   rd_kafka_assignor_topic_t **eligible_topics,
-                                  size_t eligible_topic_cnt,
+                                  uint32_t eligible_topic_cnt,
                                   char *errstr,
                                   size_t errstr_size,
                                   void *opaque) {
@@ -933,10 +933,10 @@ static int ut_testTwoConsumersTwoTopicsSixPartitions(
 static int setupRackAwareAssignment0(rd_kafka_t *rk,
                                      const rd_kafka_assignor_t *rkas,
                                      rd_kafka_group_member_t *members,
-                                     size_t member_cnt,
+                                     int member_cnt,
                                      int replication_factor,
                                      int num_broker_racks,
-                                     size_t topic_cnt,
+                                     int topic_cnt,
                                      char *topics[],
                                      int *partitions,
                                      int *subscriptions_count,
@@ -986,10 +986,10 @@ static int setupRackAwareAssignment0(rd_kafka_t *rk,
 static int setupRackAwareAssignment(rd_kafka_t *rk,
                                     const rd_kafka_assignor_t *rkas,
                                     rd_kafka_group_member_t *members,
-                                    size_t member_cnt,
+                                    uint32_t member_cnt,
                                     int replication_factor,
                                     int num_broker_racks,
-                                    size_t topic_cnt,
+                                    uint32_t topic_cnt,
                                     char *topics[],
                                     int *partitions,
                                     int *subscriptions_count,
@@ -1659,7 +1659,6 @@ static int rd_kafka_range_assignor_unittest(void) {
         int fails = 0;
         char errstr[256];
         rd_kafka_assignor_t *rkas;
-        size_t i;
 
         conf = rd_kafka_conf_new();
         if (rd_kafka_conf_set(conf, "group.id", "test", errstr,
@@ -1677,7 +1676,8 @@ static int rd_kafka_range_assignor_unittest(void) {
         rkas = rd_kafka_assignor_find(rk, "range");
         RD_UT_ASSERT(rkas, "range assignor not found");
 
-        for (i = 0; i < RD_ARRAY_SIZE(ALL_RACKS) - 1; i++) {
+        uint32_t i = 0;
+        for (; i < RD_ARRAY_SIZE(ALL_RACKS) - 1; i++) {
                 char c       = 'a' + i;
                 ALL_RACKS[i] = rd_kafkap_str_new(&c, 1);
         }
@@ -1712,11 +1712,11 @@ static int rd_kafka_range_assignor_unittest(void) {
 
                 for (j = RD_KAFKA_RANGE_ASSIGNOR_UT_NO_BROKER_RACK;
                      j != RD_KAFKA_RANGE_ASSIGNOR_UT_CONFIG_CNT; j++) {
-                        RD_UT_SAY("[ Test #%" PRIusz ", RackConfig = %d ]", i,
+                        RD_UT_SAY("[ Test %u, RackConfig = %d ]", i,
                                   j);
                         r += tests[i](rk, rkas, j);
                 }
-                RD_UT_SAY("[ Test #%" PRIusz " ran for %.3fms ]", i,
+                RD_UT_SAY("[ Test %u ran for %.3fms ]", i,
                           (double)(rd_clock() - ts) / 1000.0);
 
                 RD_UT_ASSERT(!r, "^ failed");

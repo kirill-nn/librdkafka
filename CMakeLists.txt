@@ -122,6 +122,8 @@ endif()
 
 # SASL {
 if(WIN32)
+  add_compile_definitions(UNICODE)
+  add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
   set(with_sasl_default ON)
 else()
   if(PkgConfig_FOUND)
@@ -179,7 +181,7 @@ if(ENABLE_LZ4_EXT)
 endif()
 # }
 
-option(RDKAFKA_BUILD_STATIC "Build static rdkafka library" OFF)
+option(RDKAFKA_BUILD_STATIC "Build static rdkafka library" ON)
 option(RDKAFKA_BUILD_EXAMPLES "Build examples" ON)
 option(RDKAFKA_BUILD_TESTS "Build tests" ON)
 if(WIN32)

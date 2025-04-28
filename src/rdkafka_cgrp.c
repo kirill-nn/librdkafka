@@ -1491,7 +1491,7 @@ static void rd_kafka_cgrp_rejoin(rd_kafka_cgrp_t *rkcg, const char *fmt, ...)
 
 static void rd_kafka_cgrp_rejoin(rd_kafka_cgrp_t *rkcg, const char *fmt, ...) {
         char reason[512];
-        va_list ap;
+        va_list ap = "";
         char astr[128];
         if (rkcg->rkcg_group_protocol == RD_KAFKA_GROUP_PROTOCOL_CONSUMER) {
                 rd_kafka_cgrp_consumer_rejoin(rkcg, fmt, ap);
@@ -6434,7 +6434,7 @@ void rd_kafka_cgrp_consumer_expedite_next_heartbeat(rd_kafka_cgrp_t *rkcg,
 
         rd_kafka_t *rk = rkcg->rkcg_rk;
         /* Calculate the exponential backoff. */
-        int64_t backoff = 0;
+        int backoff = 0;
         if (rkcg->rkcg_expedite_heartbeat_retries)
                 backoff = 1 << (rkcg->rkcg_expedite_heartbeat_retries - 1);
 

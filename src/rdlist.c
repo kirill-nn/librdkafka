@@ -306,7 +306,7 @@ void rd_list_destroy_free(void *rl) {
         rd_list_destroy((rd_list_t *)rl);
 }
 
-void *rd_list_elem(const rd_list_t *rl, int idx) {
+void *rd_list_elem(const rd_list_t *rl, size_t idx) {
         if (likely(idx < rl->rl_cnt))
                 return (void *)rl->rl_elems[idx];
         return NULL;

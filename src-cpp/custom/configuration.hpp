@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <functional>
+#include <string>
 
 #include "common.hpp"
 #include "rdkafka.h"

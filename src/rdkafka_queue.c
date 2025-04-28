@@ -405,7 +405,7 @@ rd_kafka_op_t *rd_kafka_q_pop_serve(rd_kafka_q_t *rkq,
                 rd_ts_t abs_timeout = rd_timeout_init_us(timeout_us);
 
                 if (can_q_contain_fetched_msgs)
-                        rd_kafka_app_poll_start(rkq->rkq_rk, 0, timeout_us);
+                        rd_kafka_app_poll_start(rkq->rkq_rk, 0, (uint8_t)timeout_us);
 
                 while (1) {
                         rd_kafka_op_res_t res;
